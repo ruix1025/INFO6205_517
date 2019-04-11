@@ -36,9 +36,9 @@ public class Draw {
         }
     }
     
-    private String IMAGENAME = "panda.jpg";   
-    private int WIDTH;      //迷宫一行有多少个格子
-    private int HEIGHT;    //迷宫有多少行
+    private String IMAGENAME = "panda.jpg";  //Picture name 
+    private int WIDTH;      //The width of the picture
+    private int HEIGHT;    //The height of the picture
     
     private int gene_len; // 基因长度
     private int chrom_len = WIDTH*HEIGHT; // 染色体长度
@@ -49,17 +49,18 @@ public class Draw {
     private List<boolean[]> individuals = new ArrayList<boolean[]>(population); // 存储当代种群的染色体
     private List<BI> best_individual = new ArrayList<BI>(iter_limit);// 存储每一代中最优秀的个体
  
-    
+    //Initial the whole program, read picture and initial values
     private void initialValues() throws IOException {
     	BufferedImage image = ImageIO.read(this.getClass().getResource(IMAGENAME));
     	WIDTH = image.getWidth();
-    	WIDTH = image.getHeight();
+    	HEIGHT = image.getHeight();
     	gene_len = 2;
     	population = 20;
     	cross_ratio = 0.83;
     	muta_ratio = 0.002;
     	iter_limit = 300;
     }
+    
     // 初始化种群
     public void initPopulation() {
         Random r = new Random(System.currentTimeMillis());
