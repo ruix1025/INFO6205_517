@@ -31,7 +31,7 @@ public class GenerationTool {
 	        }
 	    }
 	    
-	    private String IMAGENAME = "panda2.png";   
+	    private String IMAGENAME = "meizi.png";   
 	    private int WIDTH; //image width    
 	    private int HEIGHT; //image height
 	    private BufferedImage image;
@@ -55,9 +55,9 @@ public class GenerationTool {
 	    	gene_len = 1;//Every pixel is only black or white
 	    	chrom_len = WIDTH*HEIGHT;
 	    	population = WIDTH;//Every generation has WIDTH number of individuals
-	    	cross_ratio = 0.66;
-	    	muta_ratio = 0.066;
-	    	iter_limit = 300;
+	    	cross_ratio = 0.005;
+	    	muta_ratio = 0.002;
+	    	iter_limit = 12000;
 	    }
 	    
 	     
@@ -116,6 +116,7 @@ public class GenerationTool {
 	        cumulation[0] = max_fitness;
 	        for (int i = 1; i < population; i++) {
 	            double fit = getFitness(individuals.get(i));
+	            System.out.println(fit);
 	            cumulation[i] = cumulation[i - 1] + fit;
 	            
 	            if (fit > max_fitness) {
