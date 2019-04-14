@@ -50,8 +50,6 @@ public class ImageTool extends Component {
 
 			
 			}
-			
-			System.out.println("++++++");
 		}
 		
 		// Output new graph

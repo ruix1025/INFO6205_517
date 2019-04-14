@@ -11,7 +11,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-public class Draw {
+public class GenerationTool {
 	 
 	    public class BI {
 	        double fitness;
@@ -31,29 +31,32 @@ public class Draw {
 	        }
 	    }
 	    
-	    private String IMAGENAME = "panda.jpg";   
-	    private int WIDTH; //image.width    
-	    private int HEIGHT; 
+	    private String IMAGENAME = "panda2.png";   
+	    private int WIDTH; //image width    
+	    private int HEIGHT; //image height
 	    private BufferedImage image;
+	    boolean[] originalImage;
 	    
 	    private int gene_len; 
-	    private int chrom_len = WIDTH*HEIGHT; 
+	    private int chrom_len; 
 	    private int population; 
 	    private double cross_ratio;
 	    private double muta_ratio;
 	    private int iter_limit;
 	    private List<boolean[]> individuals = new ArrayList<boolean[]>(population); 
 	    private List<BI> best_individual = new ArrayList<BI>(iter_limit);
-	 
+	    
 	    
 	    private void initialValues() throws IOException {
 	    	image = ImageIO.read(this.getClass().getResource(IMAGENAME));
+	    	originalImage = ImageTool.marchThroughImage(image);
 	    	WIDTH = image.getWidth();
 	    	HEIGHT = image.getHeight();
-	    	gene_len = 1;//1
-	    	population = 20;
-	    	cross_ratio = 0.83;
-	    	muta_ratio = 0.002;
+	    	gene_len = 1;//Every pixel is only black or white
+	    	chrom_len = WIDTH*HEIGHT;
+	    	population = WIDTH;//Every generation has WIDTH number of individuals
+	    	cross_ratio = 0.66;
+	    	muta_ratio = 0.066;
 	    	iter_limit = 300;
 	    }
 	    
@@ -73,6 +76,7 @@ public class Draw {
 	    public void cross(boolean[] arr1, boolean[] arr2) {
 	        Random r = new Random(System.currentTimeMillis());
 	        int length = arr1.length;
+	        //System.out.println(length);
 	        int slice = 0;
 	        do {
 	            slice = r.nextInt(length);
@@ -108,6 +112,7 @@ public class Draw {
 	        double[] cumulation = new double[population];
 	        int best_index = 0;
 	        double max_fitness = getFitness(individuals.get(best_index));
+	        System.out.println("Max fitness " + max_fitness);
 	        cumulation[0] = max_fitness;
 	        for (int i = 1; i < population; i++) {
 	            double fit = getFitness(individuals.get(i));
@@ -119,9 +124,11 @@ public class Draw {
 	            }
 	        }
 	        Random rand = new Random(System.currentTimeMillis());
-	        for (int i = 0; i < population; i++)
+	        for (int i = 0; i < population; i++) {
+	        	//System.out.println(findByHalf(cumulation,rand.nextDouble() * cumulation[population - 1]));
 	            next_generation[i] = individuals.get(findByHalf(cumulation,
 	                    rand.nextDouble() * cumulation[population - 1]));
+	        }
 	       
 	        BI bi = new BI(max_fitness, individuals.get(best_index));
 	        // printPath(individuals.get(best_index));
@@ -157,13 +164,12 @@ public class Draw {
 	 
 	    
 	    public double getFitness(boolean[] individual) throws IOException {
-	    	boolean[] originalImage = ImageTool.marchThroughImage(image);
-	    	int fitness = 0;
-	    	for(int i = 0; i < originalImage.length; i++) {
+	    	double fitness = 0;
+	    	for(int i = 0; i < chrom_len; i++) {
 	    		if(originalImage[i] == individual[i])
 	    			fitness++;
 	    	}
-	    	return fitness/ originalImage.length;
+	    	return fitness/chrom_len;
 	    }
 	 
 	   
@@ -175,6 +181,7 @@ public class Draw {
 	        while (iter_limit-- > 0) {
 	            
 	            Collections.shuffle(individuals);
+	            //System.out.println(individuals);
 	            for (int i = 0; i < population - 1; i += 2) {
 	                
 	                if (rand.nextDouble() < cross_ratio) {
@@ -191,20 +198,18 @@ public class Draw {
 	                break;
 	            }
 	        }
+	        
+	        /*boolean[] tmp = best_individual.get(299).getIndv();
+	        for(int i=0; i<HEIGHT; i++) {
+	        	for(int j=0; j<WIDTH; j++) {
+	        		int result = 0;
+	        		if(tmp[j+i*WIDTH]) result=1;
+	        		System.out.print(result);
+	        	}
+	        	System.out.println();
+	        }*/
 	        return success;
 	    }
-	 
-	    
-	//  public static void main(String[] args) {
-//	      GA ga = new GA(8, 8);
-//	      if (!ga.run()) {
-//	          System.out.println("û���ҵ��߳��Թ���·��.");
-//	      } else {
-//	          int gen = ga.best_individual.size();
-//	          boolean[] individual = ga.best_individual.get(gen - 1).indv;
-//	          System.out.println(ga.getPath(individual));
-//	      }
-	//  }
 	    
 }
 
