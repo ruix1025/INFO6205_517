@@ -17,10 +17,10 @@ public class ImageTool extends Component {
 		 new ImageTool();
 	 }
 	
-	public static boolean[] marchThroughImage(BufferedImage image) throws IOException {
+	public static boolean[][] marchThroughImage(BufferedImage image) throws IOException {
 		int w = image.getWidth();
 		int h = image.getHeight();
-		boolean[] result = new boolean[w * h];
+		boolean[][] result = new boolean[w][h];
 		int rgb = 0;
 
 		for (int i = 0; i < h; i++) {
@@ -46,7 +46,7 @@ public class ImageTool extends Component {
 				image.setRGB(j, i, rgb);
 				
 				// black is true and white is false
-				result[i * w + j] = whiteOrBlack;
+				result[j][i] = whiteOrBlack;
 
 			
 			}

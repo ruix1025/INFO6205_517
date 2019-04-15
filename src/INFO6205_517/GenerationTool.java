@@ -68,7 +68,7 @@ public class GenerationTool {
 	    
 	    private void initialValues() throws IOException {
 	    	image = ImageIO.read(this.getClass().getResource(IMAGENAME));
-	    	originalImage = ImageTool.marchThroughImage(image);
+	    	//originalImage = ImageTool.marchThroughImage(image);
 	    	WIDTH = image.getWidth();
 	    	HEIGHT = image.getHeight();
 	    	gene_len = 1;//Every pixel is only black or white
@@ -77,7 +77,7 @@ public class GenerationTool {
 	    	population = WIDTH;//Every generation has WIDTH number of individuals
 	    	cross_ratio = 0.4;
 	    	muta_ratio = 0.3;
-	    	iter_limit = 120000;
+	    	iter_limit = 10;
 	    }
 	    
 	     
@@ -294,7 +294,8 @@ public class GenerationTool {
 	    		else 
 	    			fitness = fitness - individual[i];
 	    	}
-	    	return fitness;
+	    	System.out.println(chrom_len);
+	    	return fitness/pixel_num;
 	    }
 	 
 	   
