@@ -77,7 +77,7 @@ public class GenerationTool {
 	    	population = WIDTH;//Every generation has WIDTH number of individuals
 	    	cross_ratio = 0.4;
 	    	muta_ratio = 0.3;
-	    	iter_limit = 12000;
+	    	iter_limit = 120000;
 	    }
 	    
 	     
@@ -93,13 +93,12 @@ public class GenerationTool {
 
 	    	Random r = new Random();
 	    	
-	    	int x = r.nextInt((WIDTH - 3 - 2) + 1) + 2;
-	    	int y = r.nextInt((HEIGHT - 3 - 2) + 1) + 2;
-	    	
 	    	for (int i = 0; i < population; i++) {
 	    		int len = gene_len * chrom_len;
 	    		int[] chrom = new int[len];
 	            for (int j = 0; j < pixel_num; j++) {
+	            	int x = r.nextInt((WIDTH - 3 - 2) + 1) + 2;
+	    	    	int y = r.nextInt((HEIGHT - 3 - 2) + 1) + 2;
 	    	    	if(Math.random() > 0.5)
 	    	    		rhombus(chrom, x, y);
 	    	    	else 
@@ -204,6 +203,12 @@ public class GenerationTool {
 	        int length = individual.length;
 	        Random r = new Random(System.currentTimeMillis());
 	        individual[r.nextInt(length)] = 0;
+	        int x = r.nextInt((WIDTH - 3 - 2) + 1) + 2;
+	    	int y = r.nextInt((HEIGHT - 3 - 2) + 1) + 2;
+	    	if(Math.random() > 0.5)
+	    		rhombus(individual, x, y);
+	    	else 
+	    		square(individual, x, y);
 	    }
 	 
 	    
@@ -280,11 +285,11 @@ public class GenerationTool {
 	    	return fitness/chrom_len;*/
 	    	int fitness = 0;
 	    	for(int i = 0; i < chrom_len; i++) {
-	    		if(originalImage[i] && individual[i] > 0)
+	    		if(originalImage[i] && (individual[i] > 0))
 	    			fitness = fitness + individual[i];
-	    		else if(!originalImage[i] && individual[i] == 0)
+	    		else if((!originalImage[i]) && (individual[i] == 0))
 	    			fitness = fitness + pixel_num;
-	    		else if(originalImage[i] && individual[i] == 0)
+	    		else if(originalImage[i] && (individual[i] == 0))
 	    			fitness = fitness - pixel_num;
 	    		else 
 	    			fitness = fitness - individual[i];
@@ -293,7 +298,7 @@ public class GenerationTool {
 	    }
 	 
 	   
-	    public boolean run() throws IOException {
+	    public void run() throws IOException {
 	    	initialValues();
 	        initPopulation();
 	        Random rand = new Random(System.currentTimeMillis());
@@ -328,7 +333,6 @@ public class GenerationTool {
 	        	}
 	        	System.out.println();
 	        }*/
-	        return success;
 	    }
 	    
 }

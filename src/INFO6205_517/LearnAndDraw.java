@@ -6,7 +6,8 @@ public class LearnAndDraw {
 
 	public static void main(String[] args) throws IOException {
 		GenerationTool gt = new GenerationTool();
-		System.out.println(gt.run());
+		gt.run();
+		//System.out.println(gt.run());
 	}
 
 }
