@@ -39,6 +39,7 @@ public class GenerationTool2 {
     private double cross_ratio;
     private double muta_ratio;
     private int iter_limit; 
+    private int black_number;
     private List<boolean[]> individuals = new ArrayList<boolean[]>(population); //Individual is each line of the image
     private List<BI> best_individual = new ArrayList<BI>(iter_limit);
     
@@ -55,15 +56,20 @@ public class GenerationTool2 {
     
     private void initPopulation() {
         Random r = new Random(System.currentTimeMillis());
+        black_number = 0;
+        for (int j = 0; j < WIDTH; j++)
+        	if(originalImage[j]) black_number++;
+        
         for (int i = 0; i < population; i++) {
             int len = gene_len * chrom_len;
             boolean[] ind = new boolean[len];
-            
-            
-            for (int j = 0; j < len; j++)
+            for (int k = 0; k < len; k++)
+            	ind[k] = false;
+            for (int j = 0; j < black_number; j++)
                 ind[j] = r.nextBoolean();
             individuals.add(ind);
         }
+        
     }
     
     private void cross(boolean[] arr1, boolean[] arr2) {
@@ -90,9 +96,19 @@ public class GenerationTool2 {
     }
     
     private void mutation(boolean[] individual) {
+    	if(black_number == 0) return;
         int length = individual.length;
         Random r = new Random(System.currentTimeMillis());
-        individual[r.nextInt(length)] ^= false;
+        //individual[r.nextInt(length)] ^= false;
+        boolean whiteOrBlack = false;//suggest the first point is white or black
+        int firstPoint = r.nextInt(length);
+        if (individual[firstPoint]) 
+        	whiteOrBlack = true;
+        individual[firstPoint] ^= false;
+        int secondPoint = r.nextInt(length);
+        while (individual[secondPoint] != whiteOrBlack)
+        	secondPoint = r.nextInt(length);
+        individual[secondPoint] ^= false;
     }
     
     private int findByHalf(double[] arr, double find) {
