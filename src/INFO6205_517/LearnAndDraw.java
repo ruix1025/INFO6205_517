@@ -5,6 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.imageio.ImageIO;
 
@@ -32,7 +38,7 @@ public class LearnAndDraw {
 		//System.out.println(gt.run());
 	}*/
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		File pic = new File("test3.jpg");
 	    BufferedImage image = ImageIO.read(pic);
 		boolean[][] originalImage = ImageTool.marchThroughImage(image);
@@ -40,21 +46,31 @@ public class LearnAndDraw {
 		int WIDTH = image.getWidth();
 		List<List<BI>> best_result = new ArrayList<List<BI>>();
 		
+		ExecutorService pool = Executors.newFixedThreadPool(7);
 		for(int i=0; i< HEIGHT; i++) {
-			System.out.println("================");
+			//System.out.println("================");
 //			GenerationTool2 gt = new GenerationTool2(i, originalImage[i]);
 //			List<BI> tmp = gt.run();
 //			best_result.add(tmp);
 			
-			GenerationTool2 gt3 = new GenerationTool2();
-			List<BI> tmp = gt3.run(originalImage[i]);
-			best_result.add(tmp);
+			//GenerationTool2 gt3 = new GenerationTool2();
+			//List<BI> tmp = gt3.run(originalImage[i]);
+			//best_result.add(tmp);
 			//System.out.println(tmp.size());
-			
-			
-
+			boolean[] originalImageLine = originalImage[i];
+			Callable<List<BI>> run = new Callable<List<BI>>(){
+				@Override
+				public List<BI> call() throws IOException, InterruptedException{
+					GenerationTool2 gt3 = new GenerationTool2();
+					List<BI> tmp = gt3.run(originalImageLine);
+					Thread.sleep(1000);
+					return tmp;
+				}
+			};
+			pool.submit(run); 	
+			best_result.add(run.call());
 		}
-
+		pool.shutdown();
 		
 		boolean[] fixed = new boolean[best_result.size() * WIDTH];
 		for(int i = 0; i < HEIGHT; i ++) {
@@ -69,9 +85,7 @@ public class LearnAndDraw {
 		
 		ImageTool it = new ImageTool(image);
 		it.produceImage(image, fixed);
-
-
-
 	}
+	
 
 }
