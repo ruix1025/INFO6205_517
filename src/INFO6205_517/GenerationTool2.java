@@ -49,9 +49,9 @@ public class GenerationTool2 {
     	gene_len = 1;//Every pixel is only black or white
     	chrom_len = WIDTH;
     	population = 250;//The number of individuals in each generation
-    	cross_ratio = 0.4;
-    	muta_ratio = 0.05;
-    	iter_limit = 10;
+    	cross_ratio = 0.05;
+    	muta_ratio = 0.002;
+    	iter_limit = 1000;
     }
     
     private void initPopulation() {
@@ -63,12 +63,12 @@ public class GenerationTool2 {
         for (int i = 0; i < population; i++) {
             int len = gene_len * chrom_len;
             boolean[] ind = new boolean[len];
-            /*for (int k = 0; k < len; k++)
+            for (int k = 0; k < len; k++)
             	ind[k] = false;
             for (int j = 0; j < black_number; j++)
-                ind[r.nextInt(len)] = true;*/
-            for (int j = 0; j <len; j++)
-            	ind[j] = r.nextBoolean();
+                ind[r.nextInt(len)] = true;
+            //for (int j = 0; j <len; j++)
+            	//ind[j] = r.nextBoolean();
             individuals.add(ind);
         }
         
@@ -101,8 +101,8 @@ public class GenerationTool2 {
     	if(black_number == 0) return;
         int length = individual.length;
         Random r = new Random(System.currentTimeMillis());
-        individual[r.nextInt(length)] ^= false;
-        /*boolean whiteOrBlack = false;//suggest the first point is white or black
+        //individual[r.nextInt(length)] ^= false;
+        boolean whiteOrBlack = false;//suggest the first point is white or black
         int firstPoint = r.nextInt(length);
         if (individual[firstPoint]) 
         	whiteOrBlack = true;
@@ -110,7 +110,7 @@ public class GenerationTool2 {
         int secondPoint = r.nextInt(length);
         while (individual[secondPoint] != whiteOrBlack)
         	secondPoint = r.nextInt(length);
-        individual[secondPoint] ^= false;*/
+        individual[secondPoint] ^= false;
     }
     
     private int findByHalf(double[] arr, double find) {
@@ -151,7 +151,6 @@ public class GenerationTool2 {
         double[] cumulation = new double[population];
         int best_index = 0;
         double max_fitness = getFitness(individuals.get(best_index));
-        System.out.println("Max fitness " + max_fitness);
         cumulation[0] = max_fitness;
         for (int i = 1; i < population; i++) {
             double fit = getFitness(individuals.get(i));
@@ -162,17 +161,24 @@ public class GenerationTool2 {
                 max_fitness = fit;
             }
         }
+        //System.out.println("avg: " + cumulation[population - 1]/population);
         for (int i = 0; i < population; i++)
         	cumulation[i] = cumulation[i]/cumulation[population - 1];
         Random rand = new Random(System.currentTimeMillis());
         for (int i = 0; i < population; i++) {
               next_generation[i] = individuals.get(findByHalf(cumulation,
     	                    rand.nextDouble() * cumulation[population - 1]));
+        	//next_generation[i] = individuals.get(best_index);
         }
+        /*for (int i = population/2; i < population; i++) {
+        	boolean[] ind = new boolean[length]; 
+        	for (int j = 0; j <length; j++)
+             	ind[j] = rand.nextBoolean();
+        	next_generation[i] = ind;
+        }*/
        
         BI bi = new BI(max_fitness, individuals.get(best_index));
         // printPath(individuals.get(best_index));
-        //System.out.println(max_fitness);
         best_individual.add(bi);
         
         for (int i = 0; i < population; i++)
