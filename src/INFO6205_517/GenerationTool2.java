@@ -43,7 +43,7 @@ public class GenerationTool2 {
     private List<boolean[]> individuals = new ArrayList<boolean[]>(population); //Individual is each line of the image
     private List<BI> best_individual = new ArrayList<BI>(iter_limit);
     
-    private void initialValues(int HEIGHT, boolean[] originalLine) throws IOException {
+    private void initialValues(boolean[] originalLine) throws IOException {
     	originalImage = originalLine;
     	WIDTH = originalImage.length;
     	gene_len = 1;//Every pixel is only black or white
@@ -51,7 +51,7 @@ public class GenerationTool2 {
     	population = 250;//The number of individuals in each generation
     	cross_ratio = 0.4;
     	muta_ratio = 0.05;
-    	iter_limit = 100;
+    	iter_limit = 10;
     }
     
     private void initPopulation() {
@@ -63,10 +63,12 @@ public class GenerationTool2 {
         for (int i = 0; i < population; i++) {
             int len = gene_len * chrom_len;
             boolean[] ind = new boolean[len];
-            for (int k = 0; k < len; k++)
+            /*for (int k = 0; k < len; k++)
             	ind[k] = false;
             for (int j = 0; j < black_number; j++)
-                ind[j] = r.nextBoolean();
+                ind[r.nextInt(len)] = true;*/
+            for (int j = 0; j <len; j++)
+            	ind[j] = r.nextBoolean();
             individuals.add(ind);
         }
         
@@ -99,8 +101,8 @@ public class GenerationTool2 {
     	if(black_number == 0) return;
         int length = individual.length;
         Random r = new Random(System.currentTimeMillis());
-        //individual[r.nextInt(length)] ^= false;
-        boolean whiteOrBlack = false;//suggest the first point is white or black
+        individual[r.nextInt(length)] ^= false;
+        /*boolean whiteOrBlack = false;//suggest the first point is white or black
         int firstPoint = r.nextInt(length);
         if (individual[firstPoint]) 
         	whiteOrBlack = true;
@@ -108,7 +110,7 @@ public class GenerationTool2 {
         int secondPoint = r.nextInt(length);
         while (individual[secondPoint] != whiteOrBlack)
         	secondPoint = r.nextInt(length);
-        individual[secondPoint] ^= false;
+        individual[secondPoint] ^= false;*/
     }
     
     private int findByHalf(double[] arr, double find) {
@@ -149,7 +151,7 @@ public class GenerationTool2 {
         double[] cumulation = new double[population];
         int best_index = 0;
         double max_fitness = getFitness(individuals.get(best_index));
-        //System.out.println("Max fitness " + max_fitness);
+        System.out.println("Max fitness " + max_fitness);
         cumulation[0] = max_fitness;
         for (int i = 1; i < population; i++) {
             double fit = getFitness(individuals.get(i));
@@ -178,8 +180,8 @@ public class GenerationTool2 {
         return max_fitness;
     }
     
-    public List<BI> run(int HEIGHT, boolean[] originalLine) throws IOException {
-    	initialValues(HEIGHT, originalLine);
+    public List<BI> run(boolean[] originalLine) throws IOException {
+    	initialValues(originalLine);
         initPopulation();
         Random rand = new Random(System.currentTimeMillis());
         while (iter_limit-- > 0) {
