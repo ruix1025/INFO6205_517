@@ -48,10 +48,10 @@ public class GenerationTool2 {
     	WIDTH = originalImage.length;
     	gene_len = 1;//Every pixel is only black or white
     	chrom_len = WIDTH;
-    	population = 250;//The number of individuals in each generation
+    	population = 6400;//The number of individuals in each generation
     	cross_ratio = 0.05;
     	muta_ratio = 0.002;
-    	iter_limit = 1000;
+    	iter_limit = 10000;
     }
     
     private void initPopulation() {
@@ -63,12 +63,12 @@ public class GenerationTool2 {
         for (int i = 0; i < population; i++) {
             int len = gene_len * chrom_len;
             boolean[] ind = new boolean[len];
-            for (int k = 0; k < len; k++)
+            /*for (int k = 0; k < len; k++)
             	ind[k] = false;
             for (int j = 0; j < black_number; j++)
-                ind[r.nextInt(len)] = true;
-            //for (int j = 0; j <len; j++)
-            	//ind[j] = r.nextBoolean();
+                ind[r.nextInt(len)] = true;*/
+            for (int j = 0; j <len; j++)
+            	ind[j] = r.nextBoolean();
             individuals.add(ind);
         }
         
@@ -101,8 +101,8 @@ public class GenerationTool2 {
     	if(black_number == 0) return;
         int length = individual.length;
         Random r = new Random(System.currentTimeMillis());
-        //individual[r.nextInt(length)] ^= false;
-        boolean whiteOrBlack = false;//suggest the first point is white or black
+        individual[r.nextInt(length)] ^= false;
+        /*boolean whiteOrBlack = false;//suggest the first point is white or black
         int firstPoint = r.nextInt(length);
         if (individual[firstPoint]) 
         	whiteOrBlack = true;
@@ -110,7 +110,7 @@ public class GenerationTool2 {
         int secondPoint = r.nextInt(length);
         while (individual[secondPoint] != whiteOrBlack)
         	secondPoint = r.nextInt(length);
-        individual[secondPoint] ^= false;
+        individual[secondPoint] ^= false;*/
     }
     
     private int findByHalf(double[] arr, double find) {
@@ -194,8 +194,8 @@ public class GenerationTool2 {
             
             Collections.shuffle(individuals);
             //System.out.println(individuals);
-            for (int i = 0; i < population - 1; i += 2) {
-                
+            for (int i = 0; i < population - 1; i += 5) {
+            	
                 if (rand.nextDouble() < cross_ratio) {
                     cross(individuals.get(i), individuals.get(i + 1));
                 }
