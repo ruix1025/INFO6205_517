@@ -1,13 +1,10 @@
 package INFO6205_517;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 
 public class GenerationTool2 {
@@ -39,7 +36,7 @@ public class GenerationTool2 {
     private double cross_ratio;
     private double muta_ratio;
     private int iter_limit; 
-    private int black_number;
+
     private List<boolean[]> individuals = new ArrayList<boolean[]>(population); //Individual is each line of the image
     private List<BI> best_individual = new ArrayList<BI>(iter_limit);
     
@@ -48,25 +45,18 @@ public class GenerationTool2 {
     	WIDTH = originalImage.length;
     	gene_len = 1;//Every pixel is only black or white
     	chrom_len = WIDTH;
-    	population = 6400;//The number of individuals in each generation
+    	population = WIDTH * originalImage.length;//The number of individuals in each generation
     	cross_ratio = 0.05;
-    	muta_ratio = 0.002;
-    	iter_limit = 10000;
+    	muta_ratio = 0.000002;
+    	iter_limit = 1000;//Generation number
     }
     
     private void initPopulation() {
         Random r = new Random(System.currentTimeMillis());
-        black_number = 0;
-        for (int j = 0; j < WIDTH; j++)
-        	if(originalImage[j]) black_number++;
         
         for (int i = 0; i < population; i++) {
             int len = gene_len * chrom_len;
             boolean[] ind = new boolean[len];
-            /*for (int k = 0; k < len; k++)
-            	ind[k] = false;
-            for (int j = 0; j < black_number; j++)
-                ind[r.nextInt(len)] = true;*/
             for (int j = 0; j <len; j++)
             	ind[j] = r.nextBoolean();
             individuals.add(ind);
@@ -77,7 +67,6 @@ public class GenerationTool2 {
     private void cross(boolean[] arr1, boolean[] arr2) {
         Random r = new Random(System.currentTimeMillis());
         int length = arr1.length;
-        //System.out.println(length);
         int slice = 0;
         do {
             slice = r.nextInt(length);
@@ -98,19 +87,9 @@ public class GenerationTool2 {
     }
     
     private void mutation(boolean[] individual) {
-    	if(black_number == 0) return;
         int length = individual.length;
         Random r = new Random(System.currentTimeMillis());
-        individual[r.nextInt(length)] ^= false;
-        /*boolean whiteOrBlack = false;//suggest the first point is white or black
-        int firstPoint = r.nextInt(length);
-        if (individual[firstPoint]) 
-        	whiteOrBlack = true;
-        individual[firstPoint] ^= false;
-        int secondPoint = r.nextInt(length);
-        while (individual[secondPoint] != whiteOrBlack)
-        	secondPoint = r.nextInt(length);
-        individual[secondPoint] ^= false;*/
+        individual[r.nextInt(length)] ^= true;
     }
     
     private int findByHalf(double[] arr, double find) {
@@ -143,6 +122,8 @@ public class GenerationTool2 {
     	return fitness/chrom_len;
     }
     
+    //Select the best pic from one generation
+    //Then use Roulette Whell Selection to select better pics and put them into next generation
     public double selection() throws IOException {
         boolean[][] next_generation = new boolean[population][]; 
         int length = gene_len * chrom_len;
@@ -161,24 +142,15 @@ public class GenerationTool2 {
                 max_fitness = fit;
             }
         }
-        //System.out.println("avg: " + cumulation[population - 1]/population);
         for (int i = 0; i < population; i++)
         	cumulation[i] = cumulation[i]/cumulation[population - 1];
         Random rand = new Random(System.currentTimeMillis());
         for (int i = 0; i < population; i++) {
               next_generation[i] = individuals.get(findByHalf(cumulation,
     	                    rand.nextDouble() * cumulation[population - 1]));
-        	//next_generation[i] = individuals.get(best_index);
         }
-        /*for (int i = population/2; i < population; i++) {
-        	boolean[] ind = new boolean[length]; 
-        	for (int j = 0; j <length; j++)
-             	ind[j] = rand.nextBoolean();
-        	next_generation[i] = ind;
-        }*/
        
         BI bi = new BI(max_fitness, individuals.get(best_index));
-        // printPath(individuals.get(best_index));
         best_individual.add(bi);
         
         for (int i = 0; i < population; i++)
@@ -193,7 +165,6 @@ public class GenerationTool2 {
         while (iter_limit-- > 0) {
             
             Collections.shuffle(individuals);
-            //System.out.println(individuals);
             for (int i = 0; i < population - 1; i += 5) {
             	
                 if (rand.nextDouble() < cross_ratio) {

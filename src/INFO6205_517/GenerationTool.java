@@ -75,9 +75,9 @@ public class GenerationTool {
 	    	chrom_len = WIDTH * HEIGHT;
 	    	pixel_num = WIDTH * 2;//Number of square+rhombus
 	    	population = WIDTH;//Every generation has WIDTH number of individuals
-	    	cross_ratio = 0.4;
-	    	muta_ratio = 0.3;
-	    	iter_limit = 10;
+	    	cross_ratio = 0.05;
+	    	muta_ratio = 0.02;
+	    	iter_limit = 1;
 	    }
 	    
 	     
@@ -308,7 +308,8 @@ public class GenerationTool {
 	            
 	            Collections.shuffle(individuals);
 	            //System.out.println(individuals);
-	            for (int i = 0; i < population - 1; i += 2) {
+	            for (int i = 0; i < population - 1; i += 5) {
+	            	System.out.println("i "+i);
 	                
 	                if (rand.nextDouble() < cross_ratio) {
 	                    cross(individuals.get(i), individuals.get(i + 1));

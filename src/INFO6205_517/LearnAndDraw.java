@@ -17,27 +17,6 @@ import javax.imageio.ImageIO;
 import INFO6205_517.GenerationTool2.BI;
 
 public class LearnAndDraw {
-
-	/*public static void main(String[] args) throws IOException {
-		String IMAGENAME = "panda2.png";   
-		BufferedImage image = ImageIO.read(new LearnAndDraw().getClass().getResource(IMAGENAME));
-		boolean[][] originalImage = ImageTool.marchThroughImage(image);
-		int HEIGHT = image.getHeight();
-		List<List<BI>> best_result = new ArrayList<List<BI>>();
-		
-		for(int i=0; i< HEIGHT; i++) {
-			GenerationTool2 gt = new GenerationTool2();
-			List<BI> tmp = gt.run(i, originalImage[i]);
-			best_result.add(tmp);
-			System.out.println(tmp.size());
-		}
-		
-		
-		//GenerationTool gt = new GenerationTool();
-		//gt.run();
-		//System.out.println(gt.run());
-	}*/
-	
 	
 	public static void main(String[] args) throws Exception {
 		File pic = new File("test3.jpg");
@@ -88,10 +67,6 @@ public class LearnAndDraw {
 		for(int i = 0; i < HEIGHT; i ++) {
 			for(int j = 0; j < WIDTH; j ++) {
 				fixed[i * WIDTH + j] = best_result.get(i).get(best_result.get(i).size() - 1).getIndv()[j];
-//				int no = i * WIDTH + j;
-//				System.out.println("The" + no + " time : " + fixed[i * WIDTH + j]);
-//				System.out.println(best_result.get(i).size() - 1);
-//				System.out.println("AA");
 			}
 		}
 		
