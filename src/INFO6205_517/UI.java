@@ -1,7 +1,9 @@
 package INFO6205_517;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -17,8 +19,7 @@ public class UI extends JFrame {
 	private JPanel showPanel = null;
 	
 	private JLabel title;
-	
-	private JComboBox<String> selectionBox;
+
 	
 	// show different graphs in the panel to show the process of GA
 	private JLabel target = new JLabel();  // target graph
@@ -26,16 +27,21 @@ public class UI extends JFrame {
 	private JLabel bi2 = new JLabel();
 	private JLabel bi3 = new JLabel();
 	private JLabel last = new JLabel();    // the last survival
+	private JLabel last2 = new JLabel();
+	private JLabel last3 = new JLabel();
+	private JLabel last4 = new JLabel();
+	private JLabel last5 = new JLabel();
 	
 	
 	public UI() {
 		System.out.println("App");
 		JFrame f = new JFrame("GA - 517");
-		f.setSize(1200, 1000);
+		f.setSize(800, 600);
 //		f.setLocation(500, 300);
 		f.add(getMainPanel(), BorderLayout.CENTER);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
+	
 	}
 	
 	public JPanel getMainPanel() {
@@ -51,29 +57,19 @@ public class UI extends JFrame {
 //		setSwitchBtn(); // Set some components on the canvas for executing Dynamic rule
 //		mainPanel.add(BorderLayout.CENTER, bgPanel);
 //		mainPanel.add(BorderLayout.SOUTH, getcolorPanel());
-		
+//		
 		return mainPanel;
 	}
 	
 	public JPanel getNorthPanel() {
 		// Create the North Panel and set the layout and background color
 		northPanel = new JPanel();
-		northPanel.setLayout(new FlowLayout());
 		northPanel.setBackground(Color.WHITE);
-		title = new JLabel("Please See the GA process!");
+		title = new JLabel("GA Process");
+		Font f = new Font("Tahoma", Font.BOLD, 15);
+		title.setFont(f);
+		title.setPreferredSize(new Dimension(200, 40));
 		
-		// Create ComboBox 可以用于选择不同的图片，这个还没有实现，最后完善
-		selectionBox = new JComboBox<String>();
-		selectionBox.addItem("Select a Graph");
-		selectionBox.addItem("Pic1");
-		selectionBox.addItem("Pic2");
-		selectionBox.addItem("Pic3");
-//		selectionBox.addItemListener(this);
-		selectionBox.setEnabled(true);
-//		selectionBox.addActionListener(this);
-		
-		// Add components on panel
-		northPanel.add(selectionBox);
 		northPanel.add(title);
 		
 		
@@ -93,11 +89,18 @@ public class UI extends JFrame {
 		setLabel(last, "test3.jpg");
 		showPanel.add(last);
 		
-		setLabel(bi1, "test3.jpg");
+		setLabel(bi1, "testtest.jpg");
 		showPanel.add(bi1);
 		
-		setLabel(bi2, "panda2.jpg");
-		showPanel.add(bi2);
+		setLabel(last2, "test3.jpg");
+		setLabel(last3, "test3.jpg");
+		setLabel(last4, "test3.jpg");
+		setLabel(last5, "test3.jpg");
+		showPanel.add(last2);
+		showPanel.add(last3);
+		showPanel.add(last4);
+		showPanel.add(last5);
+
 		
 		return showPanel;
 	}
@@ -110,7 +113,7 @@ public class UI extends JFrame {
         //设置ImageIcon
         l.setIcon(i);
         //label的大小设置为ImageIcon,否则显示不完整
-        l.setBounds(50, 50, i.getIconWidth(), i.getIconHeight());
+        l.setPreferredSize(new Dimension(i.getIconWidth()*2, i.getIconHeight()*2));
 	}
 	
 	

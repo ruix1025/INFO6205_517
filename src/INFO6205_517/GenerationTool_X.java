@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class GenerationTool {
+public class GenerationTool_X {
 	
      
     private int width; //image width    
@@ -21,14 +21,15 @@ public class GenerationTool {
     private int gen_limit; // the limitation of the number of generation
     private List<boolean[]> inds = new ArrayList<boolean[]>(population); // individuals in one generation
     private List<BI> bestInds = new ArrayList<BI>(gen_limit); // the set of individuals who take the highest fitness value in their own generation
-   
+    private double p_Mutation_x;
     
     // Constructor
-    public GenerationTool() {
+    public GenerationTool_X() {
     	gene_len = 1; // Every pixel point in one row is a gene
     	p_Cross = 0.05; 
     	p_Mutation = 0.000002;
-    	gen_limit = 2100;
+    	gen_limit = 100;
+    	p_Mutation_x = 1.5 * p_Mutation;
     }
     
     
@@ -50,7 +51,9 @@ public class GenerationTool {
             	// Crossover
                 if (rand.nextDouble() < p_Cross) crossover(inds.get(i), inds.get(i + 1));
                 // Mutation
-                if (rand.nextDouble() < p_Mutation) mutation(inds.get(i));
+                double p = rand.nextDouble();
+                if (p < p_Mutation_x && p > p_Mutation) mutation_Xmen(inds.get(i));
+                else if (p < p_Mutation) mutation(inds.get(i));
             }
             // Natural Selection
             if (selection() == 1) break;
@@ -191,6 +194,27 @@ public class GenerationTool {
         return max_fitness;
     }
  
+    
+    
+	/**
+	 * Method to make individual execute positive directed mutation/ make individual random transfer to the specific one with 0.9 fitness
+	 */
+    private void mutation_Xmen(boolean[] individual){
+    	int len = originalImage.length;
+    	boolean[] Xmen = new boolean[len];
+    	System.arraycopy(originalImage, 0, Xmen, 0, len);
+    	// Change 10% color point of original image
+    	int count = (int) (len * (0.1));
+    	for(int i = 0; i < count; i ++) {
+    		Random r = new Random(System.currentTimeMillis());
+    		int n = r.nextInt(len);
+    		Xmen[n] ^= true;
+    	}
+    	// Make new individual have the 90% fitness value
+    	System.arraycopy(Xmen, 0, individual, 0, len);
+    }	
+    
+    
     
     
     public int BinarySearch(double[] arr, double target) {

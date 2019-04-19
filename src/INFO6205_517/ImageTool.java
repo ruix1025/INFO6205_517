@@ -12,109 +12,85 @@ import javax.imageio.stream.ImageOutputStream;
 
 public class ImageTool extends Component {
 
-	
+	// Constructor
 	public ImageTool(BufferedImage image) {
 		try {
 		    // get the BufferedImage, using the ImageIO class
-//		    File pic = new File("test3.jpg");
-//		    BufferedImage image = ImageIO.read(pic);
-		    marchThroughImage(image);
+		    readImage(image);
 		    } catch (IOException e) {
 		      System.err.println(e.getMessage());
 		    }
 	}
-	 
-	 public void produceImage(BufferedImage image, boolean[] nums) throws IOException {
-			int rgb = 0;
-			int w = image.getWidth();
-			int h = image.getHeight();
+	
+	
+	/**
+	 * Method to produce the image based on the input boolean array 
+	 * @param image the original/target graph 
+	 * @param nums the fixed boolean array which is produced in the process of Natural Selection
+	 * @param name the name of the output graph file
+	 */
+	 public void produceImage(BufferedImage image, boolean[] nums, String name) throws IOException {
+			int rgb = 0; // the info of color
+			int w = image.getWidth(); // the width of image
+			int h = image.getHeight(); // the height of image
 			for(int i = 0; i < h; i++) {
 				for(int j = 0; j < w; j++) {
 					int cur = i * w + j;
-					// 0 means white
-					if(nums[cur] == false) {
+					if(nums[cur] == false) { // false means white
 						Color col = new Color(255, 255, 255); 
 						rgb = col.getRGB();
 					}
-					
-					// more than 0 means black
-					else {
+					else {                  // true means black
 						Color col = new Color(0, 0, 0); 
 						rgb = col.getRGB();
 					}
-					
 					image.setRGB(j, i, rgb);
 				}
 			}
+			
 			// Output new graph
 			Iterator<ImageWriter> it = ImageIO.getImageWritersByFormatName("jpg");
 		    ImageWriter writer = it.next();
-		    ImageOutputStream ios = ImageIO.createImageOutputStream(new File("testtest.jpg"));
+		    ImageOutputStream ios = ImageIO.createImageOutputStream(new File(name + ".jpg"));
 		    writer.setOutput(ios);
 		    writer.write(image);
 		    image.flush();
 		    ios.flush();
 		} 
 	 
-	
-	public static boolean[][] marchThroughImage(BufferedImage image) throws IOException {
-		int w = image.getWidth();
-		int h = image.getHeight();
-		boolean[][] result = new boolean[w][h];
-		int rgb = 0;
-
+	 
+	/**
+	 * Method to read the original image and use array to store the color/RGB information of this picture
+	 * @param image the original/target graph 
+	 * @return colorInfo the array store the whole color information about the target/original pic
+	 */
+	public static boolean[][] readImage(BufferedImage image) throws IOException {
+		
+		int w = image.getWidth(); // the width of image
+		int h = image.getHeight(); // the height of image
+		boolean[][] colorInfo = new boolean[w][h]; // the array to store color information
+		int rgb = 0; // the info of color
+		
 		for (int i = 0; i < h; i++) {
 			for (int j = 0; j < w; j++) {
-				int pixel = image.getRGB(j, i);
-				boolean whiteOrBlack = true;
-				int red = (pixel & 0xff0000) >> 16;
-			
-				// White's RGB = (255, 255, 255)
-				if (red > 100) {   
-					whiteOrBlack = false;
+				int pixel = image.getRGB(j, i); // get the color information from the image
+				boolean isBlack = true;         // If white, false; If black, true
+				int red = (pixel & 0xff0000) >> 16; // the degree of red can change the color to white or black 
+				if (red > 100) {                // White's RGB = (255, 255, 255)
+					isBlack = false;
 					Color col = new Color(255, 255, 255); 
 					rgb = col.getRGB();
 				}
-				
-				// Black's RGB = (0, 0, 0)
-				else {  
-					whiteOrBlack = true;
+				else {                         // Black's RGB = (0, 0, 0)
+					isBlack = true;
 					Color col = new Color(0, 0, 0); 
 					rgb = col.getRGB();
 				}
-				
-				image.setRGB(j, i, rgb);
-				
-				// black is true and white is false
-				result[i][j] = whiteOrBlack;
-
-			
+				image.setRGB(j, i, rgb);       // set the new color information from the image
+				colorInfo[i][j] = isBlack;	
 			}
 		}
-		
-		// Output new graph
-		Iterator<ImageWriter> it = ImageIO.getImageWritersByFormatName("jpg");
-	    ImageWriter writer = it.next();
-	    ImageOutputStream ios = ImageIO.createImageOutputStream(new File("new1.jpg"));
-	    writer.setOutput(ios);
-	    writer.write(image);
-	    image.flush();
-	    ios.flush();
-
-		return result;
-	}
-
-	
-	
-	public ImageTool() {
-		try {
-		    // get the BufferedImage, using the ImageIO class
-		    File pic = new File("test3.jpg");
-		    BufferedImage image = ImageIO.read(pic);
-		    marchThroughImage(image);
-		    } catch (IOException e) {
-		      System.err.println(e.getMessage());
-		    }
+		return colorInfo;
 	}
 
 }
