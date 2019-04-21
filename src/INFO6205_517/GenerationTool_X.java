@@ -28,7 +28,7 @@ public class GenerationTool_X {
     	gene_len = 1; // Every pixel point in one row is a gene
     	p_Cross = 0.05; 
     	p_Mutation = 0.000002;
-    	gen_limit = 100;
+    	gen_limit = 1000;
     	p_Mutation_x = 1.5 * p_Mutation;
     }
     
@@ -52,7 +52,7 @@ public class GenerationTool_X {
                 if (rand.nextDouble() < p_Cross) crossover(inds.get(i), inds.get(i + 1));
                 // Mutation
                 double p = rand.nextDouble();
-                if (p < p_Mutation_x && p > p_Mutation) mutation_Xmen(inds.get(i));
+                if (p < p_Mutation_x && p > p_Mutation) mutation_Xmen(inds.get(i), originalImage);
                 else if (p < p_Mutation) mutation(inds.get(i));
             }
             // Natural Selection
@@ -60,7 +60,28 @@ public class GenerationTool_X {
         }
         return bestInds;
     }
+ 
     
+    
+    public List<BI> run(boolean[] originalRow, List<boolean[]> lastInds) throws IOException {
+    	initialValues(originalRow);
+    	inds = lastInds;
+        Random rand = new Random(System.currentTimeMillis());
+        while (gen_limit-- > 0) {
+            Collections.shuffle(inds);
+            for (int i = 0; i < population - 1; i += 5) {
+            	// Crossover
+                if (rand.nextDouble() < p_Cross) crossover(inds.get(i), inds.get(i + 1));
+                // Mutation
+                double p = rand.nextDouble();
+                if (p < p_Mutation_x && p > p_Mutation) mutation_Xmen(inds.get(i), originalImage);
+                else if (p < p_Mutation) mutation(inds.get(i));
+            }
+            // Natural Selection
+            if (selection() == 1) break;
+        }
+        return bestInds;
+    }
     
     
 	/**
@@ -191,6 +212,8 @@ public class GenerationTool_X {
         bestInds.add(bi);
         // Put them into next generation
         for (int i = 0; i < population; i++) inds.set(i, next_generation[i]);
+        
+        System.out.println("Current Max Fitness: "+ max_fitness);
         return max_fitness;
     }
  
@@ -199,7 +222,7 @@ public class GenerationTool_X {
 	/**
 	 * Method to make individual execute positive directed mutation/ make individual random transfer to the specific one with 0.9 fitness
 	 */
-    private void mutation_Xmen(boolean[] individual){
+    public boolean[] mutation_Xmen(boolean[] individual, boolean[] originalImage){
     	int len = originalImage.length;
     	boolean[] Xmen = new boolean[len];
     	System.arraycopy(originalImage, 0, Xmen, 0, len);
@@ -212,6 +235,7 @@ public class GenerationTool_X {
     	}
     	// Make new individual have the 90% fitness value
     	System.arraycopy(Xmen, 0, individual, 0, len);
+    	return Xmen;
     }	
     
     
@@ -231,6 +255,20 @@ public class GenerationTool_X {
             else return medium;
         } while (min < max);
         return max;
+    }
+ 
+    
+ // Get and Set methods
+    public int getLimit() {
+    	return this.gen_limit;
+    }
+    
+    public void setLimit(int limit) {
+    	this.gen_limit = limit;
+    }
+    
+    public List<boolean[]> getCurInds(){
+    	return this.inds;
     }
     	
    

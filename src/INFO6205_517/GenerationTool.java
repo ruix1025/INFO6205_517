@@ -28,11 +28,10 @@ public class GenerationTool {
     	gene_len = 1; // Every pixel point in one row is a gene
     	p_Cross = 0.05; 
     	p_Mutation = 0.000002;
-    	gen_limit = 2100;
+    	gen_limit = 1000;
     }
     
-    
-    
+       
 	/**
 	 * Method to implement the Genetic Algorithm
 	 * @param  originalRow one row of the original/target picture
@@ -59,6 +58,23 @@ public class GenerationTool {
     }
     
     
+    public List<BI> run(boolean[] originalRow, List<boolean[]> lastInds) throws IOException {
+    	initialValues(originalRow);
+    	inds = lastInds;
+        Random rand = new Random(System.currentTimeMillis());
+        while (gen_limit-- > 0) {
+            Collections.shuffle(inds);
+            for (int i = 0; i < population - 1; i += 5) {
+            	// Crossover
+                if (rand.nextDouble() < p_Cross) crossover(inds.get(i), inds.get(i + 1));
+                // Mutation
+                if (rand.nextDouble() < p_Mutation) mutation(inds.get(i));
+            }
+            // Natural Selection
+            if (selection() == 1) break;
+        }
+        return bestInds;
+    }
     
 	/**
 	 * Method to set values based on target graph
@@ -188,6 +204,7 @@ public class GenerationTool {
         bestInds.add(bi);
         // Put them into next generation
         for (int i = 0; i < population; i++) inds.set(i, next_generation[i]);
+        System.out.println("Current Max Fitness: "+ max_fitness);
         return max_fitness;
     }
  
@@ -209,5 +226,17 @@ public class GenerationTool {
         return max;
     }
     	
-   
+    // Get and Set methods
+    public int getLimit() {
+    	return this.gen_limit;
+    }
+    
+    public void setLimit(int limit) {
+    	this.gen_limit = limit;
+    }
+    
+    public List<boolean[]> getCurInds(){
+    	return this.inds;
+    }
+    	
 }

@@ -1,9 +1,13 @@
 package test;
 
 import static org.junit.Assert.*;
+
 import java.util.Random;
+
 import org.junit.Test;
+
 import INFO6205_517.GenerationTool;
+import INFO6205_517.GenerationTool_X;
 
 public class Test_GA {
 
@@ -63,11 +67,28 @@ public class Test_GA {
 		for(int i = 0;i<50;i++) {
 			b[i] = r.nextBoolean();
 		}
-//		boolean[] old = new boolean[50];
-//		System.arraycopy(b, 0, old, 0, 50);
+		boolean[] old = new boolean[50];
+		System.arraycopy(b, 0, old, 0, 50);
 		
 		int i = gt.mutation(b);
-		assertFalse(b[i]);
+		assertTrue(b[i]!= old[i]);
+	}
+	
+	@Test
+	public void testMutation_X() {
+		GenerationTool_X gtX = new GenerationTool_X();
+		boolean[] origin = {true,false,true,false,true,false,true,false,true,false};
+		boolean[] ind = {true,true,true,true,true,true,true,true,true,true};
+		ind = gtX.mutation_Xmen(ind, origin);
+		
+		int count = 0;
+		for(int i = 0;i<ind.length;i++) {
+			if(origin[i]!=ind[i]) {
+				count++;
+			}
+		}
+		
+		assertTrue(count == ind.length*0.1);
 	}
 	
 	@Test
